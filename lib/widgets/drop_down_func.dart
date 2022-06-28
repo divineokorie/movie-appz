@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
 import '../models/search_category.dart';
 
-List<DropdownMenuItem<String>> get() => [
+List<DropdownMenuItem<String>> getDropDownMenu() => [
       const DropdownMenuItem(
         value: SearchCategory.popular,
         child: Text(
@@ -24,4 +23,18 @@ List<DropdownMenuItem<String>> get() => [
           style: TextStyle(color: Colors.white),
         ),
       ),
+      // const DropdownMenuItem(
+      //   value: SearchCategory.upcoming,
+      //   child: Text(
+      //     SearchCategory.upcoming,
+      //     style: TextStyle(color: Colors.white),
+      //   ),
+      // ),
+      // const DropdownMenuItem(
+      //   value: SearchCategory.upcoming,
+      //   child: Text(
+      //     SearchCategory.upcoming,
+      //     style: TextStyle(color: Colors.white),
+      //   ),
+      // ),
     ];

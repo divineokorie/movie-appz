@@ -1,6 +1,7 @@
 import 'package:flickd_app/controllers/main_page_data_controller.dart';
 import 'package:flickd_app/models/main_page_data.dart';
-import 'package:flickd_app/widgets/movie_tile.dart';
+import 'package:flickd_app/pages/detail_page.dart';
+import 'package:flickd_app/widgets/movie_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/background_widget.dart';
@@ -16,14 +17,14 @@ var selectedMoviePosterUrlProvider = StateProvider<String?>((ref) {
   return movies!.isNotEmpty ? movies[0].posterUrl() : null;
 });
 
-class MainPage extends ConsumerStatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+class MainMobilePage extends ConsumerStatefulWidget {
+  const MainMobilePage({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<MainPage> createState() => _MainPageState();
+  ConsumerState<MainMobilePage> createState() => _MainPageState();
 }
 
-class _MainPageState extends ConsumerState<MainPage> {
+class _MainPageState extends ConsumerState<MainMobilePage> {
   late double _deviceHeight;
   late double _deviceWidth;
 
@@ -126,7 +127,7 @@ class _MainPageState extends ConsumerState<MainPage> {
                       .updateSearchCategory(category: value.toString())
                   : null;
             },
-            items: get(),
+            items: getDropDownMenu(),
           )
         ],
       ),
@@ -163,9 +164,20 @@ class _MainPageState extends ConsumerState<MainPage> {
                           vertical: _deviceHeight * 0.01, horizontal: 0),
                       child: GestureDetector(
                         onTap: () {
-                          ref
+                          String backGroundImage = ref
                               .read(selectedMoviePosterUrlProvider.notifier)
                               .state = movie.posterUrl();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: ((context) => DetailPage(
+                                    image: backGroundImage,
+                                    deviceWidth: _deviceWidth,
+                                    deviceHeight: _deviceHeight,
+                                    movie: movie,
+                                  )),
+                            ),
+                          );
                         },
                         child: MovieTile(
                             height: _deviceHeight * 0.2,
