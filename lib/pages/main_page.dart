@@ -1,11 +1,10 @@
-import 'dart:ui';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flickd_app/controllers/main_page_data_controller.dart';
 import 'package:flickd_app/models/main_page_data.dart';
-import 'package:flickd_app/models/search_category.dart';
 import 'package:flickd_app/widgets/movie_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/background_widget.dart';
+import '../widgets/drop_down_func.dart';
 
 final mainPageDataControllerProvider =
     StateNotifierProvider<MainPageDataController, MainPageData>((ref) {
@@ -49,15 +48,16 @@ class _MainPageState extends ConsumerState<MainPage> {
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[
-            _backgroundWidget(selectedMoviePosterUrl),
-            _foregroundWidget(mainPageData, selectedMoviePosterUrl),
+            backgroundWidget(
+                selectedMoviePosterUrl, _deviceWidth, _deviceHeight),
+            foregroundWidget(mainPageData, selectedMoviePosterUrl),
           ],
         ),
       ),
     );
   }
 
-  Widget _foregroundWidget(MainPageData mainPageData, selectedMoviePosterUrl) {
+  Widget foregroundWidget(MainPageData mainPageData, selectedMoviePosterUrl) {
     return Container(
       padding: EdgeInsets.fromLTRB(0, _deviceHeight * 0.02, 0, 0),
       width: _deviceWidth * 0.88,
@@ -66,14 +66,14 @@ class _MainPageState extends ConsumerState<MainPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          _topBarWidget(mainPageData),
+          topBarWidget(mainPageData),
           _movieListViewWidget(mainPageData, selectedMoviePosterUrl),
         ],
       ),
     );
   }
 
-  Widget _topBarWidget(MainPageData mainPageData) {
+  Widget topBarWidget(MainPageData mainPageData) {
     return Container(
       height: _deviceHeight * 0.08,
       decoration: BoxDecoration(
@@ -126,29 +126,7 @@ class _MainPageState extends ConsumerState<MainPage> {
                       .updateSearchCategory(category: value.toString())
                   : null;
             },
-            items: const <DropdownMenuItem<String>>[
-              DropdownMenuItem(
-                value: SearchCategory.popular,
-                child: Text(
-                  SearchCategory.popular,
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              DropdownMenuItem(
-                value: SearchCategory.upcoming,
-                child: Text(
-                  SearchCategory.upcoming,
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              DropdownMenuItem(
-                value: SearchCategory.none,
-                child: Text(
-                  SearchCategory.none,
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
+            items: get(),
           )
         ],
       ),
@@ -201,33 +179,5 @@ class _MainPageState extends ConsumerState<MainPage> {
               child: CircularProgressIndicator(backgroundColor: Colors.white),
             ),
     );
-  }
-
-  Widget _backgroundWidget(String? selectedMoviePosterUrl) {
-    if (selectedMoviePosterUrl != null) {
-      return Container(
-        height: _deviceHeight,
-        width: _deviceWidth,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: DecorationImage(
-                image: CachedNetworkImageProvider(
-                  selectedMoviePosterUrl,
-                ),
-                fit: BoxFit.cover)),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: Container(
-            decoration: BoxDecoration(color: Colors.black.withOpacity(0.2)),
-          ),
-        ),
-      );
-    } else {
-      return Container(
-        height: _deviceHeight,
-        width: _deviceWidth,
-        color: Colors.black,
-      );
-    }
   }
 }
